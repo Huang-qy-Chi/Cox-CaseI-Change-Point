@@ -1,9 +1,8 @@
-#setwd("C:\\Users\\txw\\Desktop\\change point\\My Programme")
 library(optimx)
 library(pracma)
 library(rootSolve)
 library(MASS)
-#source("bploy.R")
+
 
 #baseline hazard: m=3
 Lambda0 = function(Time,phi){ 
@@ -23,7 +22,7 @@ Lambda0 = function(Time,phi){
 ln = function(phi, Time, Z1, Z2, theta, eta){ 
   n = length(Z2)
   m = length(phi)-1
-  Z = cbind(Z1[,1],Z1[,1]*(Z2>eta),rep(1,n)*(Z2>eta))
+  Z = cbind(Z1,Z1*(Z2>eta),rep(1,n)*(Z2>eta))
   h1 = as.matrix(exp(Z%*%theta)) #Z*theta
   B = c()
   for(s in 0:m){  #Berstein polynomials matrix
@@ -53,15 +52,16 @@ estNMLE = function(Z1, Z2, Time, D, m = 3, graph = F, err = 1e-5){
   grid_eta = seq(interval_eta[1],interval_eta[2],by=0.01)
   index = 0
   #iterating profile estimation
-  for(r in 1:100){
-    #step 1: estimate Lambda0: Nelder-Mead Method
-    Z = cbind(Z1[,1:p],Z1[,(p+1):(2*p)]*(Z2>eta0),rep(1,n)*(Z2>eta0))
+  
     #Berstein Polynominal
     B = c()
     for (s in 0:m){ 
       B = cbind(B,sapply(Time, bpoly,u = max(Time), 
                          v = min(Time),m = m, k = s))
     } 
+  for(r in 1:100){
+    #step 1: estimate Lambda0: Nelder-Mead Method
+    Z = cbind(Z1,Z1*(Z2>eta0),rep(1,n)*(Z2>eta0))
     #log-likelihood w.r.t Lambda
     #grad
     #gradient(f=l_Lambda,x=c(phi),Time=Time, Z1=Z1, Z2=Z2, theta=theta, eta=eta)
@@ -150,7 +150,7 @@ estNMLE_m = function(Z1, Z2, Time, D, m = 3, graph = F, err = 1e-5,M = 50){
   grid_eta = seq(interval_eta[1],interval_eta[2],by=0.01)
   index = 0
   #iterating profile estimation
-  Z = cbind(Z1,Z1*(Z2>eta0),rep(1,n)*(Z2>eta0))
+  
   #Berstein Polynominal
   B = c()
   for (s in 0:m){ 
@@ -159,20 +159,11 @@ estNMLE_m = function(Z1, Z2, Time, D, m = 3, graph = F, err = 1e-5,M = 50){
   } 
   for(r in 1:M){
     #step 1: estimate Lambda0: Nelder-Mead Method
-    
+    Z = cbind(Z1,Z1*(Z2>eta0),rep(1,n)*(Z2>eta0))
     #log-likelihood w.r.t Lambda
-    #grad
-    #gradient(f=l_Lambda,x=c(phi),Time=Time, Z1=Z1, Z2=Z2, theta=theta, eta=eta)
-    #phi = optim(rep(0,m+1), lnm, Z1 = Z1 , Z2 = Z2,
-                #Time = Time, theta = theta0, eta = eta0,
-                #control = c(fnscale=-1))$par
-    #phi1 = phi0
     phi = optim(rep(0,m+1), lnm, Z1 = Z1 , Z2 = Z2, D = D,
                 Time = Time, theta = theta0, eta = eta0,
                 control = c(fnscale=-1))$par
-    #Lambda0(Time,phi)  #value of baseline hazard
-    #plot(sort(Time),sort(Lambda0(Time,phi)),type = "b")  #graph of Lambda0
-    #lines(sort(Time),sort(Time))
     Lam = Lambda0(Time, phi)
     
     #step 2: estimate theta: Nelder-Mead Method
@@ -183,11 +174,6 @@ estNMLE_m = function(Z1, Z2, Time, D, m = 3, graph = F, err = 1e-5,M = 50){
     
     #step 3: estimate eta, Brent Method
     eta1 = eta0
-    #eta0 = optim(eta1, ln, Z1 = Z1, Z2 = Z2, Time = Time, phi = phi,
-    #theta = theta0, control = c(fnscale=-1),
-    #lower = interval_eta[1], upper = interval_eta[2],
-    #method = "Brent")$par
-    
     efind = which.max(sapply(grid_eta, lnm, theta = theta0, Time = Time, Z1 = Z1,
                              Z2 = Z2, phi = phi, D = D))
     eta0 = grid_eta[efind]
@@ -227,7 +213,7 @@ estNMLE_nr = function(Z1, Z2, Time, D, m = 3, graph = F, err = 1e-5,M = 50){
   grid_eta = seq(interval_eta[1],interval_eta[2],by=0.01)
   index = 0
   #iterating profile estimation
-  Z = cbind(Z1,Z1*(Z2>eta0),rep(1,n)*(Z2>eta0))
+  
   #Berstein Polynominal
   B = c()
   for (s in 0:m){ 
@@ -235,6 +221,7 @@ estNMLE_nr = function(Z1, Z2, Time, D, m = 3, graph = F, err = 1e-5,M = 50){
                        v = min(Time),m = m, k = s))
   } 
   for(r in 1:M){
+    Z = cbind(Z1,Z1*(Z2>eta0),rep(1,n)*(Z2>eta0))
     #step 1: estimate Lambda0: Nelder-Mead Method with Berstein Polynominal
     phi = optim(rep(0,m+1), lnm, Z1 = Z1 , Z2 = Z2, D = D,
                 Time = Time, theta = theta0, eta = eta0,
@@ -392,7 +379,7 @@ estNMLE_nr1 = function(Z1, Z2, Time, D, m = 3, graph = F, err = 1e-5,M = 50){
   grid_eta = seq(interval_eta[1],interval_eta[2],by=0.1)
   index = 0
   #iterating profile estimation
-  Z = cbind(Z1,Z1*(Z2>eta0),rep(1,n)*(Z2>eta0))
+  
   #Berstein Polynominal
   B = c()
   for (s in 0:m){ 
@@ -400,6 +387,7 @@ estNMLE_nr1 = function(Z1, Z2, Time, D, m = 3, graph = F, err = 1e-5,M = 50){
                        v = min(Time),m = m, k = s))
   } 
   for(r in 1:M){
+    Z = cbind(Z1,Z1*(Z2>eta0),rep(1,n)*(Z2>eta0))
     #step 1: estimate Lambda0: Nelder-Mead Method with Berstein Polynominal
     phi = optim(rep(0,m+1), lnm, Z1 = Z1 , Z2 = Z2, D = D,
                 Time = Time, theta = theta0, eta = eta0,
@@ -494,7 +482,7 @@ estNMLE_nrcon = function(Z1, Z2, Time, D, con, m = 3, graph = F, err = 1e-5,M = 
   grid_eta = seq(interval_eta[1],interval_eta[2],by=0.1)
   index = 0
   #iterating profile estimation
-  Z = cbind(Z1,Z1*(Z2>eta0),rep(1,n)*(Z2>eta0),con)
+  
   #Berstein Polynominal
   B = c()
   for (s in 0:m){ 
@@ -502,6 +490,7 @@ estNMLE_nrcon = function(Z1, Z2, Time, D, con, m = 3, graph = F, err = 1e-5,M = 
                        v = min(Time),m = m, k = s))
   } 
   for(r in 1:M){
+    Z = cbind(Z1,Z1*(Z2>eta0),rep(1,n)*(Z2>eta0),con)
     #step 1: estimate Lambda0: Nelder-Mead Method with Berstein Polynominal
     phi = optim(rep(0,m+1), lnm_con, Z1 = Z1 , Z2 = Z2, D = D, con = con,
                 Time = Time, theta = theta0, eta = eta0,
