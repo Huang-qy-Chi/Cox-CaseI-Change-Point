@@ -29,7 +29,6 @@ def SUP_test(data, m, K=5, boot = 1000, alpha=0.05, seed = 42):
         p = Z1.shape[1]-1 #
         Res_cox = cph(data, m, graph=False)
         Theta = Res_cox['Theta']
-        # Theta = np.concatenate(Theta, np.zeros(p+1))
         Lambda_U = Res_cox['Lambda_U']
         r0 = Lambda_U*np.exp(Z@Theta)   #cumulative hazard
         r1 = np.exp(-r0)    # survival
@@ -40,17 +39,13 @@ def SUP_test(data, m, K=5, boot = 1000, alpha=0.05, seed = 42):
             h_v = r0  
             Q_y = h_v * (De * np.exp(-h_v)/(1-np.exp(-h_v)+1e-8) - (1-De))*(Z_2>zetao)  #n*1
             Z1_tilde = Z1 
-            # Q_y_zeta = Q_y*(Z_2>zetao)
             score1 = (Q_y.T@Z1_tilde).T   #(p+1)*1
             score1 = score1.reshape(-1,1)
             cong = Q_y**2
             score2 = Z1.T@np.diag(cong)@Z1
-            # score2 = score1@score1.T #(p+1)*(p+1)
-            # score2 = ZC0.T@np.diag(Q_y**2)@ZC0
             SUP_cal = score1.T@np.linalg.inv(score2+1e-8)@score1
             SUP_0.append(SUP_cal)
         SUP_0 = np.array(SUP_0, dtype='float32')
-        # print(np.max(SUP_0))
         SUP_stat = np.max(SUP_0)
 
         return SUP_stat
@@ -80,38 +75,4 @@ def SUP_test(data, m, K=5, boot = 1000, alpha=0.05, seed = 42):
         'Quantile': Quan,
         'P_value':  p_va
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
