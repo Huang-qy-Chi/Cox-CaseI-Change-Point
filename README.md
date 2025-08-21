@@ -12,6 +12,6 @@ $\textbf{Notification: }$ this project is protected by the $\textbf{Copyright La
 Any unauthorized copying, modification, or distribution will result in legal consequences, 
 and the author reserves all rights to enforce its intellectual property.
 
-Copyright © 2025 Q. Huang. All rights reserved.
+Copyright © 2025 Qiyue Huang. All rights reserved.
 
 20/08/2025, Hung Hom, Kowloon, Hong Kong, China.
