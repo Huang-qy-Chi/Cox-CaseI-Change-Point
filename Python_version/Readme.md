@@ -1,4 +1,4 @@
-Please attach to Maintest.ipynb to see how to use the function. 
+Please attach the file $\textbf{Example.ipynb}$ to see how to use the function. 
 
 $\textbf{Notification: }$ this project is protected by the $\textbf{Copyright Law of the P.R.C}$ and the $\textbf{Copyright Ordinance (Cap. 528)}$. 
 Any unauthorized copying, modification, or distribution will result in legal consequences, 
