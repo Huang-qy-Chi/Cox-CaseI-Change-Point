@@ -1,6 +1,7 @@
 It works for the fixed change-point Cox model $$\Lambda(t|Z, Z_2)=\Lambda_0(t)\exp(Z^\top\beta+\tilde{Z}^\top\gamma I(Z_2>\zeta))$$ 
 under current status data (case-I interval censored data), where $t\in [0, M]$, $Z\in\mathbb{R}^p$, $\tilde{Z}=(1, Z^\top)^\top$, 
 $Z_2\in\mathbb{R}$, $\Lambda_0(\cdot)$ denotes the baseline cumulative hazard and $I(\cdot)$ represents the indicator. 
+Detailed discussion can be seen in the article "Estimation of the Change Point Cox Proportional Hazards Model Based on Case I Interval-censored Data". 
 
 I recommend considering the Python version first, as the R version was uploaded last year and may cause confusion due to its very low quality. 
 Some $\textbf{VERY BAD}$ things happened when I wrote code in ``R_version" during 2024, which made me unwilling to update them, and now I have finally decided to rewrite it with Python. 
