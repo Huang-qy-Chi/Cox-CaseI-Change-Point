@@ -112,7 +112,7 @@ def mn_boot(data,q=3,m=3,boot=5000,seed=42,B=100,seq=0.01):
 
 
 #%%-----------------------------------------------------------------------------
-def interval_zeta(data,m1,zeta,m=3,B=1000,seq=0.01,seed=42,alpha=0.05):
+def interval_zeta(data,m1,zeta,m=3,B=5000,seq=0.01,seed=42,alpha=0.05):
     Z_2 = data['Z_2']
     n = len(Z_2)
 
@@ -141,6 +141,7 @@ def interval_zeta(data,m1,zeta,m=3,B=1000,seq=0.01,seed=42,alpha=0.05):
         'inter_length': inter_length,
         'interval': interval
     }
+
 
 
 
