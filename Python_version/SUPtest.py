@@ -9,7 +9,7 @@ from cph import cph
 
 
 #%%------------------------------------------SUP test-------------------------------------------
-def SUP_test(data, m, K=5, boot = 1000, alpha=0.05, seed = 42):
+def SUP_test(data, m, K=5, boot = 5000, alpha=0.05, seed = 42):
     Z_2 = data['Z_2']
     Z = data['Z']
     De = data['De']
@@ -75,4 +75,5 @@ def SUP_test(data, m, K=5, boot = 1000, alpha=0.05, seed = 42):
         'Quantile': Quan,
         'P_value':  p_va
     }
+
 
