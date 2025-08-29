@@ -80,7 +80,7 @@ def CPCPH(seed,Theta, zeta, n, m, c, m1, alpha=0.05, corr=0.5, boot=1000,\
 
 
 def parallel_CPCPH(Theta,zeta,m,n,c,m1,n_sim_total=1000, boot=1000,\
-                    alpha=0.05,corr=0.5, graph=False,B=100,seq=0.01):
+                    alpha=0.05,corr=0.5, graph=False,B=100,seq=0.01,seed=42):
     """
     The function estimated  
         a). Bias, SSE, ESE and CP for Theta, 
@@ -102,7 +102,7 @@ def parallel_CPCPH(Theta,zeta,m,n,c,m1,n_sim_total=1000, boot=1000,\
         seq: precision of the grid search, initial 0.01 
 
     Output: 
-        All outputs are dictionary with keys 'Theta' and 'zeta'. 
+        All outputs are dictionaries with keys 'Theta' and 'zeta'. 
         bias: bias of Theta and zeta (Bias): d*1 vector and a number
         sse: simulated standard error (SSE): d*1 vector and a number
         ese: estimated standard error (ESE): d*1 vector and a number
@@ -115,7 +115,7 @@ def parallel_CPCPH(Theta,zeta,m,n,c,m1,n_sim_total=1000, boot=1000,\
     print(f"Use {num_cores} CPU cores.")
     # Distribute the total number of simulations to each process
     n_sim_per_core = n_sim_total // num_cores
-    seeds = range(num_cores)  # Assign different seeds to each process
+    seeds = range(seed,seed+num_cores,1)  # Assign different seeds to each process
 
     # Create a process pool
     start_time = time.time()
@@ -128,7 +128,7 @@ def parallel_CPCPH(Theta,zeta,m,n,c,m1,n_sim_total=1000, boot=1000,\
         results = pool.map(sim_func, seeds)
         pool.close()
         pool.join()
-    # Merge all processes results
+    # Merge all processes' results
     Theta_res = np.concatenate([r['Theta_res'] for r in results], axis=0) # n_sim*d matrix
     zeta_res = np.concatenate([r['zeta_res'] for r in results]) # n_sim vector
     phi_res = np.concatenate([r['phi_res'] for r in results], axis=0) # n_sim*(m+1) vector
@@ -163,7 +163,7 @@ def parallel_CPCPH(Theta,zeta,m,n,c,m1,n_sim_total=1000, boot=1000,\
         # significance value towards alpha
         z =  scipy.stats.norm.ppf(1 - alpha/2)
         
-        # siginificance interval bounds
+        # significance interval bounds
         n_sim = Theta_res.shape[0]
         lower_bound = Theta_res - z * se_res  # (n_sim, d)
         upper_bound = Theta_res + z * se_res  # (n_sim, d)
@@ -234,7 +234,7 @@ if __name__ == '__main__':
     zeta = 2          # true change point
     m = 4
     U_max = 5
-    pr = 0.5  # actully left censoring rate
+    pr = 0.5  # actually left censoring rate
     alpha = 0.05
     seq = 0.01; corr =0.5
 
@@ -265,3 +265,4 @@ if __name__ == '__main__':
         print(f"  {param}: {value}")
 
 # Update at 26/08/2025, produced by Qiyue Huang, Hong Kong, China. 
+
