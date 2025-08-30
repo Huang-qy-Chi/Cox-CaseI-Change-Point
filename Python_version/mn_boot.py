@@ -146,7 +146,7 @@ def interval_zeta_par(data,m1,zeta,m=3,B=1000,seq=0.01,seed=42,alpha=0.05,n_jobs
     # Bootstrap zeta estimation: B times
     def parallel_boot(data_boot, key_to_keep='zeta', n_jobs= None):
         """
-        中文注释没空改了>O<
+        中文注释没空改了(>O<)
         data_boot: 包含 B 个重抽样数据集的字典
         n_jobs: 并行进程数（None 表示使用所有可用 CPU 核心）
         返回: 所有回归系数的 NumPy 数组
@@ -177,6 +177,7 @@ def interval_zeta_par(data,m1,zeta,m=3,B=1000,seq=0.01,seed=42,alpha=0.05,n_jobs
         'inter_length': inter_length,
         'interval': interval
     }
+
 
 
 
