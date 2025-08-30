@@ -144,16 +144,6 @@ def interval_zeta_par(data,m1,zeta,m=3,B=1000,seq=0.01,seed=42,alpha=0.05,n_jobs
     # Bootstrap data
     data_boot = bootstrap_dict_mixed(data,n_boot=m1, n_samples=B, random_state=seed)
     # Bootstrap zeta estimation: B times
-    # zeta_m = []
-    # for l in range(B):   #replication 
-    #     set_seed(seed+l)
-    #     # sampled_keys = np.random.choice(keys, size=len(keys), replace=True)
-    #     # data_boot = {i: data[key] for i, key in enumerate(sampled_keys)}
-    #     # data_boot1 = rename_dict_keys(data_boot, key_mapping)
-    #     data_boot1 = data_boot[l]
-    #     Res_m = cpcph(data_boot1,m=m,B=B,seq=seq)
-    #     zeta_m.append(Res_m['zeta'])
-
     def parallel_boot(data_boot, key_to_keep='zeta', n_jobs= None):
         """
         中文注释没空改了>O<
@@ -187,6 +177,7 @@ def interval_zeta_par(data,m1,zeta,m=3,B=1000,seq=0.01,seed=42,alpha=0.05,n_jobs
         'inter_length': inter_length,
         'interval': interval
     }
+
 
 
 
